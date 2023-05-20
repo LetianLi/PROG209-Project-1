@@ -1,8 +1,101 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
 a {
   color: #00B7FF;
+}
+
+h1 {
+  color: rgb(204, 182, 36);
+}
+
+body {
+  padding: 50px;
+  height: 110%;
+}
+
+div {
+  font-family: 'Poppins';
+}
+
+.synopsis {
+  font-size: 22px;
+  font-weight: bold;
+  color: rgb(240, 182, 117);
+}
+
+#getStartedBtn {
+  color: rgb(230, 225, 221);
+}
+
+input,
+.ui-select div.ui-btn {
+  background-color: rgb(88, 89, 89) !important;
+}
+
+.ui-checkbox {
+  display: inline-block !important;
+  inline-size: 32px !important
+}
+
+
+.table {
+  width: 100%;
+  margin: 50px 0;
+  padding: 20px;
+  background-color: #56563f;
+  border-radius: 10px;
+}
+
+/* Style the table headers */
+.table th {
+  text-align: left;
+  background-color: #4a4b3b;
+  padding: 5px;
+  padding-right: 25px;
+}
+
+/* Style the table rows */
+.table tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.table td {
+  padding-left: 5px;
+  padding-right: 25px;
+}
+
+#alert_message {
+  color: red;
+  margin-bottom: 2px;
+}
+
+@keyframes jiggle {
+  0% {
+    transform: translateX(0px);
+  }
+
+  25% {
+    transform: translateX(20px);
+  }
+
+  50% {
+    transform: translateX(0px);
+  }
+
+  75% {
+    transform: translateX(20px);
+  }
+
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+#successMessage {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+  color: goldenrod;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  animation: jiggle 4s ease-in-out;
+  animation-iteration-count: infinite;
 }

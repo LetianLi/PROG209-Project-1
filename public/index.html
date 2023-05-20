@@ -1,13 +1,198 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+
+  <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+  <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+  <title>PROG209 HW5 - jQuery Mobile App</title>
 </head>
 
 <body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
+  <!-- Home page -->
+  <div data-role="page" id="HomePage" data-theme="b">
+    <!-- Header -->
+    <div data-role="header">
+      <h1 class="title">Task Manager</h1>
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#HomePage">Home</a></li>
+          <li><a href="#AddPage">Add Task</a></li>
+          <li><a href="#DisplayPage">View Tasks</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div data-role="content">
+      <div>
+        <h2 class="synopsis">A task manager for everything you need to do</h2>
+        <div>
+          <p>Organize your tasks with <i>Types</i> and <i>Priority levels</i> (work/school/life, high/medium/low).</p>
+          <p>Pour over yours tasks with a large array of <i>Filters</i> and <i>Sorting</i> functions.</p>
+          <p>Finish off your tasks with by marking them <i>Done</i>!</p>
+        </div>
+        <button id="getStartedBtn" data-inline="true">Get started with a task</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div data-role="footer" data-position="fixed">
+      <h1>Made for PROG209</h1>
+    </div>
+  </div>
+
+  <!-- Add page -->
+  <div data-role="page" id="AddPage" data-theme="b">
+    <!-- Header -->
+    <div data-role="header">
+      <h1 class="title">Task Manager</h1>
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#HomePage">Home</a></li>
+          <li><a href="#AddPage">Add Task</a></li>
+          <li><a href="#DisplayPage">View Tasks</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div data-role="content">
+      <div>
+        <h2 class="synopsis">Add a task</h2>
+
+        Enter task name: <br>
+        <input type="text" value="" id="taskNameInput" />
+        <div id="alert_message"></div>
+        Enter task type: <br>
+        <select name="select-type" id="taskTypeInput" data-theme="b">
+          <option value="Work">Work</option>
+          <option value="School">School</option>
+          <option value="Life">Life</option>
+        </select>
+        Enter priority: <br>
+        <select name="select-priority" id="taskPriorityInput" data-theme="b">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+
+        <br>
+        <button id="addTaskBtn" data-inline="true">Click To Add Task</button>
+      </div>
+      <div id="successMessage"></div>
+    </div>
+
+    <!-- Footer -->
+    <div data-role="footer" data-position="fixed">
+      <h1>Made for PROG209</h1>
+    </div>
+  </div>
+
+  <!-- Display page -->
+  <div data-role="page" id="DisplayPage" data-theme="b">
+    <!-- Header -->
+    <div data-role="header">
+      <h1 class="title">Task Manager</h1>
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#HomePage">Home</a></li>
+          <li><a href="#AddPage">Add Task</a></li>
+          <li><a href="#DisplayPage">View Tasks</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div data-role="content">
+      <div>
+        <h2 class="synopsis">See your task list</h2>
+
+        <div id="table" class="table">
+          Uh oh, you don't have anything in your task list yet. Try adding one
+        </div>
+
+        <button id="getStartedBtn2" data-inline="true" style="display: block">Get started with a task</button>
+
+        <button id="deleteDoneTasksBtn" data-inline="true" style="display: none">Delete completed tasks</button>
+
+        <!-- Sorting options -->
+        <br><br>
+        <hr>
+        Sort by:
+        <select name="select-type" id="sortSetting" class="regenDisplay" data-theme="b" data-inline="true">
+          <option value="timeAdded">Time added</option>
+          <option value="name">Name</option>
+          <option value="type">Type</option>
+          <option value="priorityValue">Priority</option>
+        </select>
+        <input type="checkbox" id="sortAscendingCheckBox" class="regenDisplay" checked="true"> Ascending
+
+        <!-- Filtering options -->
+        <br><br>
+        Filter by type:
+        <input type="checkbox" class="filterTypeSetting regenDisplay" value="Work"> Work,
+        <input type="checkbox" class="filterTypeSetting regenDisplay" value="School"> School,
+        <input type="checkbox" class="filterTypeSetting regenDisplay" value="Life"> Life
+        <br><br>
+        Filter by priority:
+        <input type="checkbox" class="filterPrioritySetting regenDisplay" value="Low"> Low,
+        <input type="checkbox" class="filterPrioritySetting regenDisplay" value="Medium"> Medium,
+        <input type="checkbox" class="filterPrioritySetting regenDisplay" value="High"> High
+
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div data-role="footer" data-position="fixed">
+      <h1>Made for PROG209</h1>
+    </div>
+  </div>
+
+  <!-- Property page -->
+  <div data-role="page" id="PropertyPage" data-theme="b">
+    <!-- Header -->
+    <div data-role="header">
+      <h1 class="title">Task Manager</h1>
+      <div data-role="navbar">
+        <ul>
+          <li><a href="#HomePage">Home</a></li>
+          <li><a href="#AddPage">Add Task</a></li>
+          <li><a href="#DisplayPage">View Tasks</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div data-role="content">
+      <div>
+        <h2 class="synopsis">Task properties</h2>
+
+        <div id="propertyDisplay" class="table">
+          Something went wrong
+        </div>
+
+        <button id="returnToListBtn" data-inline="true">Return to task list</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div data-role="footer" data-position="fixed">
+      <h1>Made for PROG209</h1>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="javascripts/table.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
 </body>
 
 </html>
