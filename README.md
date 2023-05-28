@@ -6,7 +6,7 @@ Combines HW5 through HW7.
 
 ## Instructions:
 
-Use jQuery Mobile to construct a SPA (single page application)
+Use jQuery Mobile to construct a SPA (single page application) served from node.js
 
 1. Using jQuery Mobile have a welcome page that makes it clear what the site does
 and at least 3* other pages. Have a jQuery Mobile NavBar as appropriate (some
