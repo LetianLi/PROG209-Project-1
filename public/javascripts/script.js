@@ -1,27 +1,5 @@
 let selectedTaskId = undefined;
 
-let Task = function(taskName, taskType, taskPriority) {
-    this.name = taskName;
-    this.type = taskType;
-    this.priority = taskPriority;
-    this.done = false;
-    this.timeAdded = Date.now();
-    this.uuid = crypto.randomUUID();
-
-    // priorityValue is used for sorting
-    switch (this.priority) {
-        case "High":
-            this.priorityValue = 1;
-            break;
-        case "Medium":
-            this.priorityValue = 2;
-            break;
-        default:
-            this.priorityValue = 3;
-            break;
-    }
-}
-
 document.addEventListener("DOMContentLoaded", function (event) {
     // functional buttons
     document.getElementById("addTaskBtn").addEventListener("click", createArrayObj);
@@ -62,9 +40,7 @@ function createArrayObj() {
         alertBox.innerHTML = "";
         
         // push new task to server
-        let task = new Task(taskName, taskType, taskPriority);
-        console.log("Input", task);
-        $.ajax({url: "/addTask", method: "PUT", data: JSON.stringify(task), contentType: "application/json; charset=utf-8"})
+        $.ajax({url: "/addTask", method: "PUT", data: JSON.stringify({name: taskName, type: taskType, priority: taskPriority}), contentType: "application/json; charset=utf-8"})
             .done(function(data, textStatus, jqXHR) {
                 // display success message
                 let successMessage = document.getElementById("successMessage");

@@ -84,7 +84,8 @@ router.get("/getTask/:ID", function (req, res) {
 });
 
 router.put("/addTask", function(req, res) {
-  let newTask = req.body;
+  let taskArgs = req.body;
+  let newTask = new Task(taskArgs.name, taskArgs.type, taskArgs.priority);
   console.log(newTask);
   serverTaskList.push(newTask);
   console.log(serverTaskList);
