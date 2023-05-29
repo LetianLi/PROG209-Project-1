@@ -1,4 +1,3 @@
-let tasks = [];
 let selectedTaskId = undefined;
 
 let Task = function(taskName, taskType, taskPriority) {
@@ -22,15 +21,6 @@ let Task = function(taskName, taskType, taskPriority) {
             break;
     }
 }
-
-// prepush tasks
-tasks.push(new Task("Apply for social security", "Life", "High"));
-tasks.push(new Task("Buy groceries", "Life", "Low"));
-tasks.push(new Task("Talk to coworker", "Work", "Low"));
-tasks.push(new Task("Complain about pay", "Work", "Low"));
-tasks.push(new Task("Check for response from support ticket", "Work", "High"));
-tasks.push(new Task("Do Homework", "School", "Medium"));
-tasks.push(new Task("Review class notes", "School", "Medium"));
 
 document.addEventListener("DOMContentLoaded", function (event) {
     // functional buttons
@@ -62,71 +52,99 @@ function createArrayObj() {
     let taskType = document.getElementById("taskTypeInput").value;
     let taskPriority = document.getElementById("taskPriorityInput").value;
 
+    let alertBox = document.getElementById("alert_message");
+
     if (taskName === ""){
-        document.getElementById("alert_message").innerHTML = "Please enter a task name.";
+        alertBox.innerHTML = "Please enter a task name.";
         taskNameInput.focus();
         return;
     } else {
-        document.getElementById("alert_message").innerHTML = "";
+        alertBox.innerHTML = "";
         
-        // push to task array
+        // push new task to server
         let task = new Task(taskName, taskType, taskPriority);
-        tasks.push(task);
+        console.log("Input", task);
+        $.ajax({url: "/addTask", method: "PUT", data: JSON.stringify(task), contentType: "application/json; charset=utf-8"})
+            .done(function(data, textStatus, jqXHR) {
+                // display success message
+                let successMessage = document.getElementById("successMessage");
+                successMessage.innerHTML = "Task added successfully!";
+                // timeout sucess message (2.0 seconds)
+                setTimeout(() => {
+                    successMessage.innerHTML = '';
+                }, 2000);
 
-        // display success message
-        let successMessage = document.getElementById("successMessage");
-        successMessage.innerHTML = "Task added successfully!";
-        // timeout sucess message (2.0 seconds)
-        setTimeout(() => {
-            successMessage.innerHTML = '';  
-        }, 2000);
-
-        // empty name box and put focus in name box
-        taskNameInput.value = "";
-        taskNameInput.focus();
+                // empty name box and put focus in name box
+                taskNameInput.value = "";
+                taskNameInput.focus();
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                alertBox.innerHTML = "Uh oh, server responded with an error " + jqXHR.status;
+                taskNameInput.focus();
+            });
     }
+}
+
+function deleteDoneTasks() {
+    $.ajax({ url: "/deleteDoneTasks", method: "DELETE"})
+        .done(function(data, textStatus, jqXHR) {
+            displayTasks();
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            alert("Uh oh, server responded with an error " + jqXHR.status);
+        })
+}
+
+function displayTasks() {
+    let table = document.getElementById("table");
+    let getStartedBtn = document.getElementById("getStartedBtn2");
+    let deleteDoneBtn = document.getElementById("deleteDoneTasksBtn");
+
+    $.get("/getTasks")
+        .done(function(data, textStatus, jqXHR) {
+            let tasks = data;
+
+            if (tasks.length > 0) {
+                // create table, hide get started button, show delete done task button
+                let processedTaskList = processTaskList(tasks);
+                createTaskTable(table, processedTaskList);
+                getStartedBtn.style = "display: none";
+                deleteDoneBtn.style = "display: block";
+            } else { // empty task list
+                // replace table with empty message, show get started button, hide delete done task button
+                table.innerHTML = "Uh oh, you don't have anything in your task list yet. Try adding one";
+                getStartedBtn.style = "display: block";
+                deleteDoneBtn.style = "display: none";
+            }
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            table.innerHTML = "Uh oh, server responded with an error " + jqXHR.status;
+            getStartedBtn.style = "display: block";
+            deleteDoneBtn.style = "display: none";
+        });
 }
 
 function displayProperties() {
     let displayWindow = document.getElementById("propertyDisplay");
     displayWindow.innerHTML = "";
 
-    let displayedTask = tasks.find(task => task.uuid === selectedTaskId);
-
-    if (displayedTask == undefined) {
-        displayWindow.innerHTML = "Something went wrong";
-        console.log("Could not find task of id: " + selectedTaskId);
-    } else {
-        displayWindow.appendChild(Table.generateHeaderRow(["Property", "Value"]));
-        displayWindow.appendChild(Table.generateSimpleTextRow(["Task Name", displayedTask.name]));
-        displayWindow.appendChild(Table.generateSimpleTextRow(["Task Type", displayedTask.type]));
-        displayWindow.appendChild(Table.generateSimpleTextRow(["Task Priority", displayedTask.priority]));
-        displayWindow.appendChild(Table.generateSimpleTextRow(["Task Complete", displayedTask.done]));
-        displayWindow.appendChild(Table.generateSimpleTextRow(["Internal ID", displayedTask.uuid]));
-    }
+    $.get("/getTask/" + selectedTaskId)
+        .done(function (data, textStatus, jqXHR) {
+            let displayedTask = data;
+            displayWindow.appendChild(Table.generateHeaderRow(["Property", "Value"]));
+            displayWindow.appendChild(Table.generateSimpleTextRow(["Task Name", displayedTask.name]));
+            displayWindow.appendChild(Table.generateSimpleTextRow(["Task Type", displayedTask.type]));
+            displayWindow.appendChild(Table.generateSimpleTextRow(["Task Priority", displayedTask.priority]));
+            displayWindow.appendChild(Table.generateSimpleTextRow(["Task Complete", displayedTask.done]));
+            displayWindow.appendChild(Table.generateSimpleTextRow(["Internal ID", displayedTask.uuid]));
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            displayWindow.innerHTML = "Something went wrong";
+            console.log("Could not find task of id: " + selectedTaskId);
+        });
 }
 
-function deleteDoneTasks() {
-    tasks = tasks.filter(task => !task.done);
-    displayTasks();
-}
-
-function displayTasks() {
-    if (tasks.length > 0) {
-        // create table, hide get started button, show delete done task button
-        let processedTaskList = processTaskList();
-        createTaskTable(processedTaskList);
-        document.getElementById("getStartedBtn2").style = "display: none";
-        document.getElementById("deleteDoneTasksBtn").style = "display: block";
-    } else {
-        // replace table with empty message, show get started button, hide delete done task button
-        document.getElementById("table").innerHTML = "Uh oh, you don't have anything in your task list yet. Try adding one";
-        document.getElementById("getStartedBtn2").style = "display: block";
-        document.getElementById("deleteDoneTasksBtn").style = "display: none";
-    }
-}
-
-function processTaskList() {
+function processTaskList(tasks) {
     // Filter task list
     let allowedTypes = Array.from(document.getElementsByClassName("filterTypeSetting")).filter(checkbox => checkbox.checked).map(checkedBoxes => checkedBoxes.value);
     let allowedPriorities = Array.from(document.getElementsByClassName("filterPrioritySetting")).filter(checkbox => checkbox.checked).map(checkedBoxes => checkedBoxes.value);
@@ -162,7 +180,7 @@ function processTaskList() {
     if (!sortAscending) {
         sortedTasks.reverse();
     }
-
+    
     return sortedTasks;
 }
 
@@ -192,10 +210,15 @@ function generateTaskRow(task) {
     // task done col and checkbox
     let doneCell = document.createElement("td"); 
     let doneCheckbox = document.createElement("input");
-    doneCheckbox.type = "checkbox";
+    doneCheckbox.type = "checkbox"; 
     doneCheckbox.checked = task.done;
     doneCheckbox.addEventListener("change", function(){
         task.done = this.checked;
+        console.log("change fired");
+        $.ajax({ url: "/updateTaskDone", method: "POST", data: JSON.stringify({ ID: task.uuid, done: task.done }), contentType: "application/json; charset=utf-8"})
+            .done(function() {
+                displayTasks();
+            });
     });
     doneCell.appendChild(doneCheckbox);
     row.appendChild(doneCell);
@@ -203,9 +226,7 @@ function generateTaskRow(task) {
     return row;
 }
 
-function createTaskTable(processedTaskList) {
-    let table = document.getElementById("table");
-
+function createTaskTable(table, processedTaskList) {
     // clear table
     table.innerHTML = "";
 
