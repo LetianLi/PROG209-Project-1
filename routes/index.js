@@ -3,7 +3,7 @@ var router = express.Router();
 var crypto = require("crypto");
 var fs = require("fs");
 
-console.log("server startup");
+console.log("Server startup!");
 
 if (!crypto.randomUUID) {
   throw new Error("crypto.randomUUID() is not available, ensure that (node -v) is at least v15.6.0, switch using (nvm ls, nvm use v16)");
@@ -45,7 +45,6 @@ let fileManager = {
   },
   isEmpty: function () {
     var rawdata = fs.readFileSync('taskListFile.json');
-    console.log(rawdata.length);
     return rawdata.length < 1;
   }
 };
@@ -86,9 +85,7 @@ router.get("/getTask/:ID", function (req, res) {
 router.put("/addTask", function(req, res) {
   let taskArgs = req.body;
   let newTask = new Task(taskArgs.name, taskArgs.type, taskArgs.priority);
-  console.log(newTask);
   serverTaskList.push(newTask);
-  console.log(serverTaskList);
   fileManager.write();
   res.status(200).json(newTask);
 });

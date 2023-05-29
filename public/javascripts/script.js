@@ -116,7 +116,6 @@ function displayProperties() {
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
             displayWindow.innerHTML = "Something went wrong";
-            console.log("Could not find task of id: " + selectedTaskId);
         });
 }
 
@@ -190,7 +189,6 @@ function generateTaskRow(task) {
     doneCheckbox.checked = task.done;
     doneCheckbox.addEventListener("change", function(){
         task.done = this.checked;
-        console.log("change fired");
         $.ajax({ url: "/updateTaskDone", method: "POST", data: JSON.stringify({ ID: task.uuid, done: task.done }), contentType: "application/json; charset=utf-8"})
             .done(function() {
                 displayTasks();
