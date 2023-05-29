@@ -21,10 +21,6 @@ div {
   color: rgb(240, 182, 117);
 }
 
-#getStartedBtn {
-  color: rgb(230, 225, 221);
-}
-
 input,
 .ui-select div.ui-btn {
   background-color: rgb(88, 89, 89) !important;
